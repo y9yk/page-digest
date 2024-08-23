@@ -21,3 +21,7 @@ update:
 .PHONY: lint
 lint:
 	poetry run pre-commit run
+
+.PHONY: test
+test:
+	poetry run pytest ./src/tests/
