@@ -12,17 +12,19 @@ class PageDigestor(object):
     async def process(
         self,
         page_content: str,
+        role: str = "이미지에 있는 텍스트를 추출하고 요약하는 Image2Text Transformer and Summarizer",
+        prompt: str = "이미지에 있는 텍스트를 추출하고, 요약해줘",
     ):
         try:
             messages = [
                 {
                     "role": "system",
-                    "content": "",
+                    "content": role,
                 },
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": ""},
+                        {"type": "text", "text": f"{prompt}"},
                         {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{page_content}"}},
                     ],
                 },

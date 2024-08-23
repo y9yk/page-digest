@@ -43,7 +43,7 @@ class LLM(object):
 
         # process
         async for chunk in self.llm.astream(messages, config=config):
-            yield chunk
+            yield chunk.content
 
     def num_tokens_from_message(
         self,
