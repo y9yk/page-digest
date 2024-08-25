@@ -24,10 +24,8 @@ async def get_digest_content(
 
     logger.debug(locals())
 
-    # process
-    results = await DigestContentService().get_content(
-        **digest_content_request.model_dump(),
-    )
+    # processing
+    results = await DigestContentService().get_content(**digest_content_request.model_dump())
     return StreamingResponse(
         results,
         media_type="text/event-stream",
