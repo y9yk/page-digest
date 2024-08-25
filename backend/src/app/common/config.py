@@ -1,11 +1,8 @@
 import os
 from functools import lru_cache
 from os import path
-from typing import List
 
 from pydantic_settings import BaseSettings
-
-from src.app.common.constant import APP_ENV
 
 
 class Settings(BaseSettings):
@@ -31,16 +28,7 @@ class Settings(BaseSettings):
     # project
     API_PREFIX: str = f""
 
-    DB_HOST: str = "localhost"
-    DB_USER: str = "root"
-    DB_PASS: str = "password"
-    DB_NAME: str = "plus"
-    DB_PORT: str = "3306"
-    DB_POOL_PRE_PING: bool = True
-    DB_POOL_RECYCLE: int = 900
-    DB_ECHO: bool = False
-
-    OPENAI_MODEL_NAME: str = "gpt-4o-mini"
+    OPENAI_MODEL_NAME: str = "gpt-4o"
     OPENAI_API_KEY: str = ""
     OPENAI_BASE_URL: str = ""
     OPENAI_TOKEN_LIMIT: int = 128000
