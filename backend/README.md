@@ -4,7 +4,7 @@
 
 ---
 
-# Architecture
+# Conceptual Architecture
 
 page-digest의 Architecture는 아래와 같습니다.
 
