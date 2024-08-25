@@ -2,6 +2,7 @@ import logging
 
 from src.app.common.config import settings
 from src.app.clients.llm import LLM
+from src.app.modules.digest import DigestContentType
 
 
 class PageDigestor(object):
@@ -11,24 +12,43 @@ class PageDigestor(object):
 
     async def process(
         self,
-        page_content: str,
-        role: str = "이미지에 있는 텍스트를 추출하고 요약하는 Image2Text Transformer and Summarizer",
-        prompt: str = "이미지에 있는 텍스트를 추출하고, 요약해줘",
+        content: str,
+        content_type: DigestContentType,
     ):
         try:
             messages = [
                 {
                     "role": "system",
-                    "content": role,
-                },
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": f"{prompt}"},
-                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{page_content}"}},
-                    ],
-                },
+                    "content": "웹 페이지의 텍스트를 해석하고 요약하는 Web-Page Summarizer",
+                }
             ]
+
+            # construct messages
+            if content_type == DigestContentType.URL:
+                prompt = "이미지를 텍스트로 변환하고, 요약해서 Markdown 형태로 표현해줘"
+                messages.append(
+                    {
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": f"{prompt}"},
+                                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{content}"}},
+                            ],
+                        },
+                    }
+                )
+            else:
+                prompt = f"content: {content}\n\n위의 content를 해석하고 요약해서 Markdown 형태로 표현해줘"
+                messages.append(
+                    {
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": f"{prompt}"},
+                            ],
+                        },
+                    }
+                )
 
             return self.client.get_chat_response(messages=messages)
         except Exception as e:
