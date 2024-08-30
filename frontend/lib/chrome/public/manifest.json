@@ -21,7 +21,6 @@
     "128": "logo-128.png"
   },
   "host_permissions": [
-    "https://*.openai.com/"
   ],
   "background": {
     "service_worker": "background.bundle.js"
