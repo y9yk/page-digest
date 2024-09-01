@@ -4,7 +4,11 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: {
-    content: path.resolve(__dirname, "./src/content/index.js"),
+    // content: [
+    //   path.resolve(__dirname, "./src/content/index.js"),
+    //   path.resolve(__dirname, "./src/content/utils/helper.js"),
+    //   path.resolve(__dirname, "./src/content/utils/content-extractor.js"),
+    // ],
     background: path.resolve(__dirname, "./src/background/index.js"),
   },
   devtool: "inline-source-map",
@@ -41,7 +45,8 @@ module.exports = {
       patterns: [
         { from: "lib/chrome/public/manifest.json", to: "manifest.json" },
         { from: "lib/chrome/public/options.js", to: "options.js" },
-        { from: "assets/options.html", to: "options.html" },
+        // { from: "assets/options.html", to: "options.html" },
+        { from: "assets/sidepanel.html", to: "sidepanel.html" },
         { from: "assets/output.css", to: "styles.css" },
         { from: "assets/res/logo-16.png", to: "logo-16.png" },
         { from: "assets/res/logo-32.png", to: "logo-32.png" },
