@@ -1,12 +1,12 @@
 import ExpiryMap from "expiry-map";
 import { fetchSSE } from "./fetch-sse.js";
 
-// create global vars
+// // create global vars
 let ua = navigator.userAgent;
 let browserName = ua.indexOf("Chrome") > -1 ? "Chrome" : "Firefox";
 let CORE = browserName === "Chrome" ? chrome : browser;
 
-// set config and cache
+// // set config and cache
 const ENDPOINT_URL = "http://localhost:8000";
 const PATH_SUMMARY = "/digest/content";
 const CHUNK_SIZE = 3000;
@@ -97,11 +97,6 @@ function executeScripts(tab) {
 
 // Load on clicking the extension icon
 CORE.action.onClicked.addListener(async (...args) => {
-  // if (browserName === "Firefox") {
-  //   CORE.permissions.request({
-  //     origins: [ENDPOINT_URL],
-  //   });
-  // }
   executeScripts(...args);
 });
 
