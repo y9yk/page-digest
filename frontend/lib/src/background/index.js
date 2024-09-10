@@ -1,49 +1,14 @@
-import ExpiryMap from "expiry-map";
 import { fetchSSE } from "./fetch-sse.js";
 
-// // create global vars
-let ua = navigator.userAgent;
-let browserName = ua.indexOf("Chrome") > -1 ? "Chrome" : "Firefox";
-let CORE = browserName === "Chrome" ? chrome : browser;
-
-// // set config and cache
+// vars
+const ua = navigator.userAgent;
+const browserName = ua.indexOf("Chrome") > -1 ? "Chrome" : "Firefox";
+const CORE = browserName === "Chrome" ? chrome : browser;
 const ENDPOINT_URL = "http://localhost:8000";
 const PATH_SUMMARY = "/digest/content";
 const CHUNK_SIZE = 3000;
-const EXPIRE_TIME = 10 * 1000;
-const cache = new ExpiryMap(EXPIRE_TIME);
 
 // functions
-function splitTextIntoChunks(text, maxLength) {
-  const chunks = [];
-  const words = text.split(/\s+/);
-  let currentChunk = "";
-
-  for (const word of words) {
-    if (currentChunk.length + word.length + 1 <= maxLength) {
-      currentChunk += (currentChunk ? " " : "") + word;
-    } else {
-      chunks.push(currentChunk);
-      currentChunk = word;
-    }
-  }
-
-  if (currentChunk) {
-    chunks.push(currentChunk);
-  }
-
-  return chunks;
-}
-
-function combineSummaries(summaries) {
-  let combinedSummary = "";
-  for (const summary of summaries) {
-    combinedSummary += (combinedSummary ? " " : "") + summary;
-  }
-
-  return combinedSummary;
-}
-
 async function getSummary({
   content,
   content_type,
@@ -72,7 +37,7 @@ async function getSummary({
           callback(message);
         }
       } catch (err) {
-        console.log("sse message", message);
+        console.log("SSE Message", message);
         console.log(`Error in onMessage: ${err}`);
       }
     },
@@ -84,10 +49,6 @@ async function getSummary({
 
 // main function
 function executeScripts(tab) {
-  // Add a badge to signify the extension is in use
-  // CORE.action.setBadgeBackgroundColor({ color: [242, 38, 19, 230] });
-  // CORE.action.setBadgeText({ text: "GPT" });
-
   const tabId = tab.id;
   CORE.scripting.executeScript({
     target: { tabId },
@@ -104,25 +65,17 @@ CORE.action.onClicked.addListener(async (...args) => {
 CORE.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener(async (request, sender, sendResponse) => {
     try {
-      const chunk_size = CHUNK_SIZE;
-      const text = request.content;
-
-      // split content into chunks
-      const chunks = splitTextIntoChunks(text, chunk_size);
-
       // call summary API
       let summary = "";
-      for (const chunk of chunks) {
-        await getSummary({
-          content: chunk,
-          callback: (answer) => {
-            summary += answer;
-            port.postMessage({
-              answer: summary,
-            });
-          },
-        });
-      }
+      await getSummary({
+        content: request.content,
+        callback: (answer) => {
+          summary += answer;
+          port.postMessage({
+            answer: summary,
+          });
+        },
+      });
     } catch (err) {
       console.error(err);
       port.postMessage({ error: err.message });
