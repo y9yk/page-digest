@@ -220,7 +220,6 @@ async function run() {
     }
   });
 
-  console.log(`content is ${content}`);
   port.postMessage({ content });
 }
 
