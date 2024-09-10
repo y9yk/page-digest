@@ -7,9 +7,7 @@
     "tailwind": "npx tailwindcss -i ./assets/styles.css -o ./assets/output.css",
     "start": "npm run dev:chrome",
     "build:chrome": "npm run tailwind && webpack --config ./lib/webpack.chrome.config.js --mode production",
-    "dev:chrome": "npm run tailwind && webpack --config ./lib/webpack.chrome.config.js --mode development --watch",
-    "build:firefox": "npm run tailwind && webpack --config ./lib/webpack.firefox.config.js --mode production",
-    "dev:firefox": "npm run tailwind && webpack --config ./lib/webpack.firefox.config.js --mode development --watch"
+    "dev:chrome": "npm run tailwind && webpack --config ./lib/webpack.chrome.config.js --mode development --watch"
   },
   "dependencies": {
     "dompurify": "^2.4.1",
