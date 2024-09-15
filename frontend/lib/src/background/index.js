@@ -6,7 +6,7 @@ const browserName = ua.indexOf("Chrome") > -1 ? "Chrome" : "Firefox";
 const CORE = browserName === "Chrome" ? chrome : browser;
 const ENDPOINT_URL = "http://localhost:8000";
 const PATH_SUMMARY = "/digest/content";
-const CHUNK_SIZE = 3000;
+const storage = CORE.storage;
 
 // functions
 async function getSummary({
@@ -58,7 +58,11 @@ function executeScripts(tab) {
 
 // Load on clicking the extension icon
 CORE.action.onClicked.addListener(async (...args) => {
-  executeScripts(...args);
+  storage.local.get("uiOpened", function (result) {
+    if (!result.uiOpened) {
+      executeScripts(...args);
+    }
+  });
 });
 
 // Listen for messages
