@@ -1,6 +1,5 @@
 import base64
 import logging
-import time
 from playwright.async_api import async_playwright
 
 from src.app.common.config import settings
