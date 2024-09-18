@@ -73,3 +73,6 @@ env/.env.prd
 # resources
 resources/*
 !resources/template
+
+# notebooks
+notebooks
