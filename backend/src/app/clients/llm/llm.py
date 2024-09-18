@@ -1,3 +1,4 @@
+import re
 import tiktoken
 from langchain_openai import ChatOpenAI
 
@@ -43,7 +44,12 @@ class LLM(object):
 
         # process
         async for chunk in self.llm.astream(messages, config=config):
-            yield chunk.content
+            yield self.escape_pattern(chunk.content)
+
+    def escape_pattern(self, message: str) -> str:
+        for pattern in [r"\`\`\`markdown"]:
+            message = re.sub(pattern, "", message)
+        return message
 
     def num_tokens_from_message(
         self,

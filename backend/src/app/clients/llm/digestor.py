@@ -26,7 +26,7 @@ class PageDigestor(object):
 
             # construct messages
             if content_type == DigestContentType.URL:
-                prompt = "이미지를 텍스트로 변환하고, 요약해서 Markdown 형태로 표현해줘"
+                prompt = "이미지를 텍스트로 변환하고, 요약해서 Markdown으로 표현해줘, 단 ```markdown이라는 코드 블록으로 주지마"
                 messages.append(
                     {
                         "role": "user",
@@ -37,7 +37,7 @@ class PageDigestor(object):
                     },
                 )
             else:
-                prompt = f"content: {content}\n\n위의 content를 해석하고 요약해서 Markdown 형태로 표현해줘"
+                prompt = f"content: {content}\n\n위의 content를 해석하고 요약해서 Markdown으로 표현해줘, 단 ```markdown이라는 코드 블록으로 주지마"
                 messages.append(
                     {
                         "role": "user",
