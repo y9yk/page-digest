@@ -19,7 +19,7 @@ async function getSummary({
   const data = {
     content: content || "",
     content_type: content_type || "text",
-    model: model || "gpt-4o",
+    model: model || "gpt-4o-mini",
     max_tokens: max_tokens || 2000,
   };
 

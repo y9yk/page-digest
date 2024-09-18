@@ -1,7 +1,6 @@
 import { ce } from "../utils/helper";
-import * as CrossIC from "../../../../assets/res/cross.svg";
 
-export function render(CORE) {
+export function render(CORE, storage) {
   // create container
   const container = createContainer();
 
@@ -19,19 +18,23 @@ export function render(CORE) {
   root.style.position = "fixed";
   root.style.zIndex = "9999"; // Make sure it's on top of other elements
 
-  const innerContainerHeading = container.querySelector(
-    "#summarize__heading-text"
-  );
-  innerContainerHeading.innerHTML =
-    '<p>Summarized <a href="https://chat.openai.com/chat" target="_blank" class="sumz-text-sm">by ChatGPT</a></p>';
-
+  // Loading Progress
   const innerContainerBody = container.querySelector("#summarize__body");
-  innerContainerBody.innerHTML = "<p>Waiting for ChatGPT response...</p>";
+  innerContainerBody.innerHTML = `
+  <div class="flex items-center h-screen">
+    <svg xmlns="http://www.w3.org/2000/svg" style="margin: auto; background: none;" width="40" height="40" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+      <circle cx="50" cy="50" r="32" stroke-width="8" stroke="#3498db" stroke-dasharray="50.26548245743669 50.26548245743669" fill="none" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" keyTimes="0;1" values="0 50 50;360 50 50"></animateTransform>
+      </circle>
+    </svg>
+  </div>`;
 
-  // const closeButton = container.querySelector("#summarize__close-button");
-  // closeButton.addEventListener("click", function () {
-  //   document.body.removeChild(root);
-  // });
+  // Close Message Block
+  const closeButton = container.querySelector("#summarize__close-button");
+  closeButton.addEventListener("click", function () {
+    document.body.removeChild(root);
+    storage.local.set({ uiOpened: false }, function () {});
+  });
 
   return innerContainerBody;
 }
@@ -56,7 +59,20 @@ function addStylesheet(CORE, doc, link, classN) {
     .summarize-gpt-container * {
       font-family: sans-serif;
       line-height: normal;
-      font-size: 16px;
+      font-size: 15px;
+    }
+    .rounded-t-box {
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+    .rounded-b-box {
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+    }
+    .text-wrap {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto; /* Optional, for better hyphenation */
     }
   `;
   doc.appendChild(style);
@@ -65,128 +81,86 @@ function addStylesheet(CORE, doc, link, classN) {
 function createContainer() {
   return ce({
     tag: "div",
-    props: { className: "summarize-gpt-container" },
+    props: {
+      className:
+        "summarize-gpt-container bg-gray-100 flex items-center justify-center min-h-screen",
+    },
     children: [
+      // container
       {
         tag: "div",
         props: {
           className:
-            "sumz-min-w-[30%] sumz-max-h-[80%] sumz-max-w-[30%] sumz-fixed sumz-right-4 sumz-top-8 sumz-flex sumz-flex-col sumz-items-center sumz-justify-center sumz-rounded-lg sumz-bg-white sumz-shadow-md",
+            "fixed top-2 right-4 w-1/4 bg-white shadow-lg h-[calc(100vh-40px)] my-2 flex flex-col justify-between rounded-t-box rounded-b-box shadow-lg",
         },
         children: [
-          // heading
+          // header
           {
-            tag: "div",
+            tag: "header",
             props: {
               className:
-                "sumz-flex sumz-h-[40px] sumz-w-full sumz-items-center sumz-justify-between sumz-rounded-t-lg sumz-bg-gray-200 sumz-px-4",
+                "bg-slate-300 flex items-center justify-between px-4 py-4 rounded-t-box",
             },
             children: [
               {
                 tag: "div",
-                props: {
-                  id: "summarize__heading-text",
-                  className:
-                    "sumz-text-xl sumz-font-black sumz-animate-text sumz-bg-gradient-to-r sumz-from-teal-500 sumz-via-purple-500 sumz-to-orange-500 sumz-bg-clip-text sumz-text-transparent",
-                },
-              },
-              // {
-              //   tag: "img",
-              //   props: {
-              //     id: "summarize__close-button",
-              //     className:
-              //       "sumz-h-[24px] sumz-w-6 sumz-cursor-pointer sumz-rounded-lg hover:sumz-bg-sky-200",
-              //     src: CrossIC,
-              //     alt: "close",
-              //   },
-              // },
-            ],
-          },
-          // divider
-          {
-            tag: "div",
-            props: { className: "sumz-w-full sumz-h-1 sumz-bg-gray-300" },
-          },
-          // body
-          {
-            tag: "div",
-            props: {
-              className:
-                "sumz-h-full sumz-w-full sumz-overflow-y-auto sumz-px-4 sumz-py-4",
-            },
-            children: [
-              {
-                tag: "div",
-                props: {
-                  id: "summarize__body",
-                  className:
-                    "sumz-text-3-xl sumz-mb-2 sumz-flex sumz-flex-col sumz-whitespace-pre-line sumz-text-gray-700",
-                },
-              },
-            ],
-          },
-          // divider
-          {
-            tag: "div",
-            props: { className: "sumz-w-full sumz-h-1 sumz-bg-gray-200" },
-          },
-          // footer
-          {
-            tag: "div",
-            props: { className: "sumz-m-2" },
-            children: [
-              {
-                tag: "div",
-                props: {
-                  className:
-                    "sumz-flex sumz-h-[32px] sumz-w-full sumz-items-center sumz-justify-center",
-                },
+                props: {},
                 children: [
                   {
-                    tag: "div",
+                    tag: "h1",
                     props: {
-                      className:
-                        "sumz-text-lg sumz-font-bold sumz-text-gray-600",
-                      innerText: "Help Us",
+                      className: "text-sm font-bold text-black",
+                      innerText: "Page Digest",
                     },
                   },
                   {
-                    tag: "button",
+                    tag: "h3",
                     props: {
-                      id: "summarize__animation-button",
-                      onclick: () =>
-                        window.open("https://tally.so/r/woD2eP", "_blank"),
-                      className:
-                        "sumz-rounded-full sumz-border-2 sumz-border-sky-600 sumz-m-2 sumz-px-1 sumz-py-1 sumz-text-lg sumz-text-sky-600 sumz-transition-colors hover:sumz-bg-sky-100",
+                      className: "text-[12px] text-black",
+                      innerText: "Web Page Translator and Summarizer",
                     },
-                    children: [
-                      {
-                        tag: "span",
-                        props: {
-                          className:
-                            "sumz-pointer-events-none sumz-absolute sumz-inset-0 -sumz-z-10 sumz-block",
-                          id: "summarize__sparkles-container",
-                        },
-                      },
-                      {
-                        tag: "span",
-                        props: {
-                          className:
-                            "sumz-block sumz-h-[16px] sumz-overflow-hidden sumz-z-10",
-                          id: "summarize__letters-container",
-                        },
-                      },
-                    ],
                   },
                 ],
               },
               {
-                tag: "div",
+                tag: "button",
                 props: {
-                  className: "sumz-text-sm sumz-text-gray-600 sumz-pt-2",
-                  innerText:
-                    "Share Your Feedback & Ideas for Summarize and Beyond",
+                  id: "summarize__close-button",
+                  type: "button",
+                  className:
+                    "text-[10px] bg-white text-slate-500 px-3 py-1 rounded-t-box rounded-b-box shadow-md hover:bg-slate-500 hover:text-white",
+                  innerText: "x",
                 },
+              },
+            ],
+          },
+          // main
+          {
+            tag: "article",
+            props: {
+              id: "summarize__body",
+              className:
+                "p-4 flex-grow bg-gray-50 overflow-y-auto flex-1 break-words prose prose-slate",
+              innerText: "",
+            },
+          },
+          // footer
+          {
+            tag: "footer",
+            props: { className: "bg-slate-300 py-4 text-center rounded-b-box" },
+            children: [
+              {
+                tag: "div",
+                props: {},
+                children: [
+                  {
+                    tag: "h1",
+                    props: {
+                      className: "text-[12px] text-black",
+                      innerText: "© 2024. Page Digest. All Rights Reserved.",
+                    },
+                  },
+                ],
               },
             ],
           },
