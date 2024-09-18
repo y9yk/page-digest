@@ -2,6 +2,10 @@
 
 웹 페이지를 빠르게 요약해주는 Chrome Extension Service입니다.
 
+
+https://github.com/user-attachments/assets/af0733af-01b7-411b-ab8c-28284cd65378
+
+
 ---
 
 # Getting Started
